@@ -1,0 +1,18 @@
+{
+    "add_target_success": "Target {target} added successfully.",
+    "target_already_exists": "Target {target} is already in the list.",
+    "scan_completed": "Scan completed.",
+    "info_gathering_completed": "Info gathering completed.",
+    "vulnerability_scan_completed": "Vulnerability scan completed.",
+    "exploit_completed": "Exploit completed.",
+    "report_generated": "Report generated.",
+    "schedule_scan_success": "Scheduled scan for {target} every {interval} minutes successfully.",
+    "phishing_attack_executed": "Phishing attack executed on {target}.",
+    "social_engineering_attack_executed": "Social engineering attack executed on {target}.",
+    "error_during_scan": "Error during scan of {target}: {error}",
+    "error_during_info_gathering": "Error during info gathering for {target}: {error}",
+    "error_during_vulnerability_scan": "Error during vulnerability scan of {target}: {error}",
+    "error_during_exploit": "Error during exploitation of {target} using {exploit}: {error}",
+    "error_generating_report": "Error generating report: {error}",
+    "error_scheduling_scan": "Error scheduling scan: {error}"
+}

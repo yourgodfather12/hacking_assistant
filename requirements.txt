@@ -1,0 +1,7 @@
+python-nmap
+rich
+textual
+flask
+reportlab
+matplotlib
+apscheduler
