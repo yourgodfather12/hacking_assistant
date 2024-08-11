@@ -1,3 +1,4 @@
+import re
 from modules import (
     nmap_scan, info_gathering, vulnerability_scan, exploit_module, report,
     phishing, social_engineering
@@ -8,7 +9,6 @@ from textual.app import App
 from textual.widgets import Header, Footer, Button, TextInput
 from textual.layouts import GridLayout
 import json
-
 
 class HackingAssistantApp(App):
     def __init__(self, engine):
@@ -77,58 +77,75 @@ class HackingAssistantApp(App):
         self.social_btn.on_click = self.run_social_engineering_attack
 
     async def add_target(self):
-        target = self.target_input.value
-        if target:
+        target = self.target_input.value.strip()
+        if self.engine.is_valid_target(target):
             self.engine.add_target(target)
-            await self.console.print(self.engine.responses["add_target_success"].format(target=target))
-            self.target_input.value = ""
         else:
-            await self.console.print("Please enter a target.")
+            await self.console.print("[bold red]Invalid target format.[/bold red]")
 
     async def run_scan(self):
-        self.engine.run_scan()
-        await self.console.print(self.engine.responses["scan_completed"])
+        try:
+            self.engine.run_scan()
+        except Exception as e:
+            await self.console.print(f"[bold red]Scan error: {e}[/bold red]")
 
     async def run_info_gathering(self):
-        self.engine.run_info_gathering()
-        await self.console.print(self.engine.responses["info_gathering_completed"])
+        try:
+            self.engine.run_info_gathering()
+        except Exception as e:
+            await self.console.print(f"[bold red]Info gathering error: {e}[/bold red]")
 
     async def run_vulnerability_scan(self):
-        self.engine.run_vulnerability_scan()
-        await self.console.print(self.engine.responses["vulnerability_scan_completed"])
+        try:
+            self.engine.run_vulnerability_scan()
+        except Exception as e:
+            await self.console.print(f"[bold red]Vulnerability scan error: {e}[/bold red]")
 
     async def run_exploit(self):
-        await self.console.print("Enter exploit details:")
-        exploit = await self.console.input("Exploit: ")
-        payload = await self.console.input("Payload: ")
-        target = self.engine.targets[0]  # for simplicity, using the first target
-        self.engine.run_exploit(target, exploit, payload)
-        await self.console.print(self.engine.responses["exploit_completed"])
+        try:
+            await self.console.print("Enter exploit details:")
+            exploit = await self.console.input("Exploit: ")
+            payload = await self.console.input("Payload: ")
+            target = self.engine.targets[0]  # for simplicity, using the first target
+            self.engine.run_exploit(target, exploit, payload)
+            await self.console.print(self.engine.responses["exploit_completed"])
+        except Exception as e:
+            await self.console.print(f"[bold red]Exploit error: {e}[/bold red]")
 
     async def generate_report(self):
-        self.engine.generate_report()
-        await self.console.print(self.engine.responses["report_generated"])
+        try:
+            self.engine.generate_report()
+            await self.console.print(self.engine.responses["report_generated"])
+        except Exception as e:
+            await self.console.print(f"[bold red]Report generation error: {e}[/bold red]")
 
     async def schedule_scan(self):
-        target = await self.console.input("Enter target: ")
-        if target not in self.engine.targets:
-            await self.console.print("Target not in the list. Please add the target first.")
-            return
-        interval = int(await self.console.input("Enter interval in minutes: "))
-        scheduler.add_scan_job(self.engine.run_scan, target, interval)
-        await self.console.print(
-            self.engine.responses["schedule_scan_success"].format(target=target, interval=interval))
+        try:
+            target = await self.console.input("Enter target: ")
+            if target not in self.engine.targets:
+                await self.console.print("[bold red]Target not in the list. Please add the target first.[/bold red]")
+                return
+            interval = int(await self.console.input("Enter interval in minutes: "))
+            scheduler.add_scan_job(self.engine.run_scan, target, interval)
+            await self.console.print(self.engine.responses["schedule_scan_success"].format(target=target, interval=interval))
+        except Exception as e:
+            await self.console.print(f"[bold red]Scheduling scan error: {e}[/bold red]")
 
     async def run_phishing_attack(self):
-        target = await self.console.input("Enter target email: ")
-        self.engine.run_phishing_attack(target)
-        await self.console.print(self.engine.responses["phishing_attack_executed"].format(target=target))
+        try:
+            target = await self.console.input("Enter target email: ")
+            self.engine.run_phishing_attack(target)
+            await self.console.print(self.engine.responses["phishing_attack_executed"].format(target=target))
+        except Exception as e:
+            await self.console.print(f"[bold red]Phishing attack error: {e}[/bold red]")
 
     async def run_social_engineering_attack(self):
-        target = await self.console.input("Enter target email: ")
-        self.engine.run_social_engineering_attack(target)
-        await self.console.print(self.engine.responses["social_engineering_attack_executed"].format(target=target))
-
+        try:
+            target = await self.console.input("Enter target email: ")
+            self.engine.run_social_engineering_attack(target)
+            await self.console.print(self.engine.responses["social_engineering_attack_executed"].format(target=target))
+        except Exception as e:
+            await self.console.print(f"[bold red]Social engineering attack error: {e}[/bold red]")
 
 class HackingAssistantEngine:
     def __init__(self, console: Console):
@@ -139,6 +156,9 @@ class HackingAssistantEngine:
         self.db = database.Database()
         with open('responses.json') as f:
             self.responses = json.load(f)
+
+    def is_valid_target(self, target):
+        return re.match(r'^[a-zA-Z0-9.\-]+$', target) is not None
 
     def add_target(self, target):
         if target not in self.targets:
@@ -194,6 +214,10 @@ class HackingAssistantEngine:
                 self.console.print(self.responses["error_during_vulnerability_scan"].format(target=target, error=e))
 
     def run_exploit(self, target, exploit, payload):
+        if not self.is_valid_target(target):
+            self.console.print("[bold red]Invalid target format.[/bold red]")
+            return
+
         self.console.print(f"Starting exploit {exploit} on target {target}...")
         try:
             result = exploit_module.run_exploit(target, exploit, payload)
@@ -214,15 +238,6 @@ class HackingAssistantEngine:
         except Exception as e:
             self.log.error(f"Error generating report: {e}")
             self.console.print(self.responses["error_generating_report"].format(error=e))
-
-    def schedule_scan(self, target, interval):
-        try:
-            scheduler.add_scan_job(self.run_scan, target, interval)
-            self.log.info(f"Scheduled scan for {target} every {interval} minutes")
-            self.console.print(self.responses["schedule_scan_success"].format(target=target, interval=interval))
-        except Exception as e:
-            self.log.error(f"Error scheduling scan: {e}")
-            self.console.print(self.responses["error_scheduling_scan"].format(error=e))
 
     def run_phishing_attack(self, target):
         phishing.run_phishing_attack(target)
