@@ -4,7 +4,10 @@ from rich.console import Console
 def main():
     console = Console()
     hacking_assistant = HackingAssistantEngine(console)
-    hacking_assistant.run()
+    try:
+        hacking_assistant.run()
+    except Exception as e:
+        console.print(f"[bold red]Critical error: {e}[/bold red]")
 
 if __name__ == "__main__":
     main()
