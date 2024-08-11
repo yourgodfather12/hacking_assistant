@@ -1,14 +1,11 @@
 import re
-from modules import (
-    nmap_scan, info_gathering, vulnerability_scan, exploit_module, report,
-    phishing, social_engineering
-)
+import json
+from modules import (nmap_scan, info_gathering, vulnerability_scan, exploit_module, report, phishing, social_engineering)
 from utils import logger, scheduler, database, api, workflow
 from rich.console import Console
 from textual.app import App
 from textual.widgets import Header, Footer, Button, TextInput
 from textual.layouts import GridLayout
-import json
 
 class HackingAssistantApp(App):
     def __init__(self, engine):
