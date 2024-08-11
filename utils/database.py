@@ -1,5 +1,8 @@
 import sqlite3
 from config import DB_PATH
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Database:
     def __init__(self):
@@ -25,10 +28,16 @@ class Database:
             """)
 
     def add_target(self, target):
-        with self.conn:
-            self.conn.execute("INSERT OR IGNORE INTO targets (target) VALUES (?)", (target,))
+        try:
+            with self.conn:
+                self.conn.execute("INSERT OR IGNORE INTO targets (target) VALUES (?)", (target,))
+        except sqlite3.Error as e:
+            logger.error(f"Error adding target to database: {e}")
 
     def update_results(self, target, type, result):
-        with self.conn:
-            target_id = self.conn.execute("SELECT id FROM targets WHERE target = ?", (target,)).fetchone()[0]
-            self.conn.execute("INSERT INTO results (target_id, type, result) VALUES (?, ?, ?)", (target_id, type, result))
+        try:
+            with self.conn:
+                target_id = self.conn.execute("SELECT id FROM targets WHERE target = ?", (target,)).fetchone()[0]
+                self.conn.execute("INSERT INTO results (target_id, type, result) VALUES (?, ?, ?)", (target_id, type, result))
+        except sqlite3.Error as e:
+            logger.error(f"Error updating results in database: {e}")
