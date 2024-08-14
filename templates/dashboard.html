@@ -190,7 +190,6 @@
             border-top: 1px solid #33334d;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
                 width: 80px;
@@ -486,7 +485,6 @@
         const socket = io();
         let commandHistory = [];
 
-        // Real-Time Data Updates
         socket.on('update_targets', function (data) {
             updateOverview(data);
         });
@@ -692,12 +690,10 @@
             });
         }
 
-        // Initialize Tippy.js tooltips
         tippy('[data-tippy-content]', {
             theme: 'dark'
         });
 
-        // Initial load
         updateOverview();
     </script>
 
