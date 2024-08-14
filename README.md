@@ -42,15 +42,6 @@ Feel free to fork this repository and contribute by submitting pull requests. We
 Disclaimer
 This tool is intended for educational purposes and authorized testing only. The developers are not responsible for any misuse or damage caused by this tool.
 
-For more information and support, visit the documentation.
-
-vbnet
-Copy code
-
-You can customize this further based on your specific requirements or additional features. Would you like me to help you add this directly to your repository?
-
-
-
 
 
 
