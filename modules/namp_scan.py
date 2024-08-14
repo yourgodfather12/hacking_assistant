@@ -1,7 +1,11 @@
 import nmap
+import logging
 from config import NMAP_ARGUMENTS
 
-def scan_network(target):
+logger = logging.getLogger(__name__)
+
+def scan_network(target: str) -> list:
+    """Scan the network for open ports and services using nmap."""
     nm = nmap.PortScanner()
     try:
         nm.scan(hosts=target, arguments=NMAP_ARGUMENTS)
@@ -26,8 +30,11 @@ def scan_network(target):
                     }
                     host_info['services'].append(service_info)
             results.append(host_info)
+        logger.info(f"Network scan completed for target {target}.")
         return results
     except nmap.PortScannerError as e:
+        logger.error(f"Error scanning network: {e}")
         raise RuntimeError(f"Error scanning network: {e}")
     except Exception as e:
+        logger.error(f"Unexpected error during network scan for target {target}: {e}")
         raise RuntimeError(f"Unexpected error: {e}")
