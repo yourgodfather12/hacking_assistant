@@ -14,5 +14,6 @@
     "error_during_vulnerability_scan": "Error during vulnerability scan of {target}: {error}",
     "error_during_exploit": "Error during exploitation of {target} using {exploit}: {error}",
     "error_generating_report": "Error generating report: {error}",
-    "error_scheduling_scan": "Error scheduling scan: {error}"
+    "error_scheduling_scan": "Error scheduling scan: {error}",
+    "database_connection_failed": "Failed to connect to the database: {error}"
 }
